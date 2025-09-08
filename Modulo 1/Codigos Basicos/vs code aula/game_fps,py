@@ -1,0 +1,90 @@
+import pygame
+import math
+
+# Inicializa o Pygame
+pygame.init()
+
+# Definições da tela
+LARGURA = 800
+ALTURA = 600
+tela = pygame.display.set_mode((LARGURA, ALTURA))
+pygame.display.set_caption("Jogo FPS 2D")
+
+# Cores
+BRANCO = (255, 255, 255)
+PRETO = (0, 0, 0)
+VERDE = (255, 255, 255)
+AZUL = ("pink")
+
+# Configurações do jogador
+jogador_pos = [LARGURA // 2, ALTURA // 2]
+jogador_vel = 5
+raio_jogador = 15
+
+# Configurações das balas
+balas = []
+vel_bala = 7
+raio_bala = 5
+
+# Configuração do relógio
+clock = pygame.time.Clock()
+
+# Função para desenhar o jogador
+def desenhar_jogador(pos):
+    pygame.draw.circle(tela, AZUL, pos, raio_jogador)
+
+# Função para desenhar as balas
+def desenhar_balas():
+    for bala in balas:
+        pygame.draw.circle(tela, VERDE, bala[:2], raio_bala)
+
+# Função principal
+def main():
+    rodando = True
+    angulo_tiro = 0
+
+    while rodando:
+        tela.fill(PRETO)
+
+        # Captura eventos
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                rodando = False
+
+        # Movimentação do jogador
+        teclas = pygame.key.get_pressed()
+        if teclas[pygame.K_w]:
+            jogador_pos[1] -= jogador_vel
+        if teclas[pygame.K_s]:
+            jogador_pos[1] += jogador_vel
+        if teclas[pygame.K_a]:
+            jogador_pos[0] -= jogador_vel
+        if teclas[pygame.K_d]:
+            jogador_pos[0] += jogador_vel
+
+        # Tiro
+        if pygame.mouse.get_pressed()[0]:
+            mx, my = pygame.mouse.get_pos()
+            angulo_tiro = math.atan2(my - jogador_pos[1], mx - jogador_pos[0])
+            vel_x = math.cos(angulo_tiro) * vel_bala
+            vel_y = math.sin(angulo_tiro) * vel_bala
+            balas.append([jogador_pos[0], jogador_pos[1], vel_x, vel_y])
+
+        # Atualizar balas
+        for bala in balas[:]:
+            bala[0] += bala[2]
+            bala[1] += bala[3]
+            if bala[0] < 0 or bala[0] > LARGURA or bala[1] < 0 or bala[1] > ALTURA:
+                balas.remove(bala)
+
+        # Desenhar elementos na tela
+        desenhar_jogador(jogador_pos)
+        desenhar_balas()
+
+        pygame.display.update()
+        clock.tick(60)
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()

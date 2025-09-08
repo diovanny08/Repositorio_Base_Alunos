@@ -1,0 +1,44 @@
+# print("Digite o primeiro numero")
+# num1 = int(input())
+# print("Digite o segu8ndo numero")
+# num2 = int(input())
+# print("Digite o terceiro numero")
+# num3 = int(input())
+
+# resultado = num1 + num2 + num3
+
+# print(f"resultado da soma {resultado}")
+
+
+def soma(n1,n2):
+    return n1 + n2
+
+def kk(n1,n2):
+    return n1 / n2
+
+def jo(n1,n2):
+    return n1 * n2
+
+def dio (n1,n2):
+    return n1 - n2
+
+
+
+while True:
+    numero1 = float(input("digite o numero: "))
+    numero2 = float(input("digite o numero: "))
+
+    opcao = input("Bem-vindo à calculadora Novotech\n1) Somar\n2) Subtrair\n3) Multiplicar\n4) Dividir\n0) Sair\nDigite sua opção: ")
+    if opcao == "1":
+        print("A soma dos numeros é: ", {soma(numero1,numero2)})
+    elif opcao == "4":
+        print("A soma dos numeros é: ", {kk(numero1,numero2)})
+    elif opcao == "3":
+        print("A soma dos numeros é: ", {jo(numero1,numero2)})
+    elif opcao == "2":  
+        print("A soma dos numeros é: ", {dio(numero1,numero2)})
+    elif opcao == "0":
+        print ("saindo...")
+        break
+    else:
+        print("opcão errada")
