@@ -1,0 +1,119 @@
+import pygame
+from random import randint
+
+def gera_direção(velocidade):
+    if randint(0,1) == 0:
+        return velocidade
+    else:
+        return - velocidade
+
+def reset_jogo():
+    bola.x = (LARGURA_TELA - TAMANHO_BOLA)// 2
+    bola.y = (LARGURA_TELA - TAMANHO_BOLA)// 2
+    barra_direita.y = (ALTURA_TELA - ALTURA_BARRA) // 2
+    barra_esquerda.y = (ALTURA_TELA - ALTURA_BARRA) // 2
+
+LARGURA_TELA, ALTURA_TELA = 1900, 1000
+FPS = 60
+BRANCO =(255,255,255)
+PRETO = (0,0,0)
+
+LARGURA_BARRA, ALTURA_BARRA = 10,100
+VELOCIDADE_BARRA = 10
+
+TAMANHO_BOLA = 10
+VELOCIDADE_BOLA_X = 5
+VELOCIDADE_BOLA_Y = 5
+
+
+
+pygame.init()
+tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
+pygame.display.set_caption("pong turma 3")
+clock = pygame.time.Clock()
+
+velocidade_barra_direita = 0
+velocidade_barra_esquerda = 0
+
+
+
+placar_direita = 0
+placar_esquerda = 0
+fonte = pygame.font.SysFont(None, 36)
+
+
+barra_esquerda = pygame.Rect(10, (ALTURA_TELA - ALTURA_BARRA) // 2, LARGURA_BARRA, ALTURA_BARRA)
+barra_direita = pygame.Rect(LARGURA_TELA - 20, (ALTURA_TELA - ALTURA_BARRA)//2, LARGURA_BARRA, ALTURA_BARRA)
+bola = pygame.Rect((LARGURA_TELA - TAMANHO_BOLA) //2, (ALTURA_TELA - TAMANHO_BOLA) //2, TAMANHO_BOLA, TAMANHO_BOLA)
+
+velocidade_bola_x = gera_direção(VELOCIDADE_BOLA_X)
+velocidade_bola_y = gera_direção(VELOCIDADE_BOLA_Y)
+
+
+rodando = True
+while rodando:
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            rodando = False
+        if evento.type == pygame.QUIT:
+            rodando = False
+        if evento.type== pygame.KEYDOWN:
+            if evento.key == pygame.K_w:
+                velocidade_barra_esquerda= -VELOCIDADE_BARRA
+            if evento.key == pygame.K_s:
+               velocidade_barra_esquerda = VELOCIDADE_BARRA
+            if evento.key == pygame.K_UP:
+                velocidade_barra_direita = -VELOCIDADE_BARRA
+            if evento.key == pygame.K_DOWN:
+                velocidade_barra_direita= VELOCIDADE_BARRA
+
+        if evento.type == pygame.KEYUP:
+            if evento.key == pygame.K_w or evento.key == pygame.K_s:
+                velocidade_barra_esquerda = 0
+            if evento.key == pygame.K_UP or evento.key == pygame.K_DOWN:
+                velocidade_barra_direita = 0
+
+    barra_esquerda.y += velocidade_barra_esquerda
+    barra_direita.y += velocidade_barra_direita
+
+    bola.x += VELOCIDADE_BOLA_X
+    bola.y += VELOCIDADE_BOLA_Y
+
+    barra_esquerda.y = max(0,min(ALTURA_TELA - ALTURA_BARRA, barra_esquerda.y))
+    barra_direita.y = max(0,min(ALTURA_TELA - ALTURA_BARRA, barra_direita.y))
+
+    if bola.top <= 0 or bola.bottom >= ALTURA_TELA:
+        VELOCIDADE_BOLA_Y = -VELOCIDADE_BOLA_Y
+    if bola.colliderect(barra_esquerda) or bola.colliderect(barra_direita):
+        VELOCIDADE_BOLA_X = -VELOCIDADE_BOLA_X   
+
+    if bola.left <= 0:
+        placar_direita += 1
+        reset_jogo()
+
+    if bola.right >= LARGURA_TELA :
+        placar_esquerda += 1
+        reset_jogo()
+
+
+    tela.fill(PRETO)
+    pygame.draw.rect(tela, (30,144,255), barra_esquerda)
+    pygame.draw.rect(tela, (178,34,34), barra_direita)
+    pygame.draw.ellipse(tela, BRANCO, bola)
+
+    pygame.draw.aaline(tela, BRANCO, (LARGURA_TELA // 2, 0), (LARGURA_TELA//2,ALTURA_TELA))
+
+
+    #Desenhar o placar
+    pontos_esquerda = fonte.render(str(placar_esquerda), True, BRANCO)
+    pontos_direita = fonte.render(str(placar_direita), True, BRANCO)
+
+    tela.blit(pontos_esquerda, (LARGURA_TELA // 4 - pontos_esquerda.get_width() // 2, 20))
+    tela.blit(pontos_direita, (3 * LARGURA_TELA // 4 - pontos_direita.get_width() // 2, 20))
+
+
+
+    pygame.display.flip()
+    clock.tick(FPS)
+
+pygame.quit
